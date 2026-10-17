@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Find a Train | RailEase{% endblock %}
+
+{% block content %}
+
+<section class="route-search-card">
+
+    <div class="route-heading">
+        <div>
+            <p class="eyebrow">LET'S GET YOU THERE</p>
+            <h1>Where to next?</h1>
+            <p>Enter your details to explore available trains.</p>
+        </div>
+
+        <div class="route-icon">⌁</div>
+    </div>
+
+    <form method="GET" action="{{ url_for('routes_page') }}"
+          class="route-search-form">
+
+        <div class="route-field">
+            <label for="source">FROM</label>
+            <input
+                type="text"
+                id="source"
+                name="source"
+                list="stations"
+                placeholder="Enter source station"
+                value="{{ source }}"
+                required>
+        </div>
+
+        <button type="button" class="swap-button"
+                onclick="swapStations()"
+                aria-label="Swap source and destination">
+            ⇄
+        </button>
+
+        <div class="route-field">
+            <label for="destination">TO</label>
+            <input
+                type="text"
+                id="destination"
+                name="destination"
+                list="stations"
+                placeholder="Enter destination station"
+                value="{{ destination }}"
+                required>
+        </div>
+
+        <datalist id="stations">
+            {% for station in ['Delhi', 'Mumbai', 'Jaipur', 'Kolkata', 'Bhopal'] %}
+                <option value="{{ station }}">
+            {% endfor %}
+        </datalist>
+
+        <div class="route-field">
+            <label for="travel_date">JOURNEY DATE</label>
+            <input
+                type="date"
+                id="travel_date"
+                name="travel_date"
+                value="{{ travel_date }}"
+                min="{{ today if today is defined else '' }}"
+                required>
+        </div>
+
+        <button type="submit" class="button search-button">
+            Search Trains <span>→</span>
+        </button>
+
+    </form>
+
+    <p class="route-hint">
+        <span>✦</span>
+        Choose your route and discover your travel options.
+    </p>
+
+</section>
+
+{% if searched %}
+
+<section class="section route-results">
+
+    <div class="section-heading left-heading">
+        <p class="eyebrow">YOUR JOURNEY</p>
+        <h2>{{ source }} → {{ destination }}</h2>
+        <p>Travel date: {{ travel_date }}</p>
+    </div>
+
+    {% if error %}
+        <div class="message error">{{ error }}</div>
+
+    {% elif trains %}
+        <div class="route-result-grid">
+
+            {% for train in trains %}
+            <article class="route-train-card">
+
+                <div class="route-train-top">
+                    <div>
+                        <p class="train-label">TRAIN {{ train.Train_ID }}</p>
+                        <h3>{{ train.Train_Name }}</h3>
+                    </div>
+
+                    <span class="availability-pill">
+                        {{ train.Available_Seats }} seats left
+                    </span>
+                </div>
+
+                <div class="journey-line">
+                    <div>
+                        <strong>{{ train.Source }}</strong>
+                        <small>Departure</small>
+                    </div>
+
+                    <span class="journey-arrow">⟶</span>
+
+                    <div class="destination-time">
+                        <strong>{{ train.Destination }}</strong>
+                        <small>Destination</small>
+                    </div>
+                </div>
+
+                <div class="route-train-bottom">
+                    <div>
+                        <small>Price per seat</small>
+                        <h3>₹{{ "%.2f"|format(train.Price_Per_Seat) }}</h3>
+                    </div>
+
+                    <a href="{{ url_for('book_page') }}"
+                       class="button">
+                        Book Ticket →
+                    </a>
+                </div>
+
+            </article>
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+        <div class="empty-route">
+            <h3>No trains found</h3>
+            <p>
+                No available trains match this route and travel date.
+                Try another route or date.
+            </p>
+        </div>
+    {% endif %}
+
+</section>
+
+{% endif %}
+
+<script>
+function swapStations() {
+    const source = document.getElementById("source");
+    const destination = document.getElementById("destination");
+
+    const temporaryValue = source.value;
+    source.value = destination.value;
+    destination.value = temporaryValue;
+}
+</script>
+
+{% endblock %}

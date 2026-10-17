@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Home | RailEase{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-text">
+        <p class="eyebrow">YOUR JOURNEY STARTS HERE</p>
+
+        <h1>Travel smarter.<br>Travel with RailEase.</h1>
+
+        <p class="hero-description">
+            Explore trains, check routes, manage bookings
+            and discover your railway data in one place.
+        </p>
+
+        <div class="hero-actions">
+            <a href="{{ url_for('book_page') }}" class="button">
+                Book a Ticket
+            </a>
+
+            <a href="{{ url_for('trains_page') }}" class="button secondary">
+                Explore Trains
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-art">
+    <img src="{{ url_for('static', filename='images/hero.png') }}"
+         alt="Train journey">
+</div>
+</section>
+
+<section class="section">
+    <div class="section-heading">
+        <p class="eyebrow">EXPLORE RAIL EASE</p>
+        <h2>What would you like to do?</h2>
+        <p>Choose a section to get started.</p>
+    </div>
+
+    <div class="action-grid">
+
+        <a href="{{ url_for('trains_page') }}" class="action-card">
+            <span class="action-number">01</span>
+            <h3>Find Trains</h3>
+            <p>View train names, routes, seat availability and prices.</p>
+            <span class="action-link">View trains →</span>
+        </a>
+
+        <a href="{{ url_for('routes_page') }}" class="action-card">
+            <span class="action-number">02</span>
+            <h3>Route Analysis</h3>
+            <p>Find out how many trains operate on each route.</p>
+            <span class="action-link">Explore routes →</span>
+        </a>
+
+        <a href="{{ url_for('bookings_page') }}" class="action-card">
+            <span class="action-number">03</span>
+            <h3>Bookings</h3>
+            <p>View booked tickets with customer and train details.</p>
+            <span class="action-link">View bookings →</span>
+        </a>
+
+        <a href="{{ url_for('book_page') }}" class="action-card">
+            <span class="action-number">04</span>
+            <h3>Book a Ticket</h3>
+            <p>Choose a train, select a date and book your seats.</p>
+            <span class="action-link">Start booking →</span>
+        </a>
+
+        <a href="{{ url_for('admin_page') }}" class="action-card">
+            <span class="action-number">05</span>
+            <h3>Admin Dashboard</h3>
+            <p>Explore frequent customers, train performance and revenue.</p>
+            <span class="action-link">View analytics →</span>
+        </a>
+
+    </div>
+</section>
+
+<section class="section train-preview">
+    <div class="section-heading">
+        <p class="eyebrow">AVAILABLE TRAINS</p>
+        <h2>Explore our trains</h2>
+        <p>A preview of trains currently stored in the database.</p>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Train</th>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Available Seats</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for train in trains[:3] %}
+                <tr>
+                    <td>{{ train.Train_Name }}</td>
+                    <td>{{ train.Source }}</td>
+                    <td>{{ train.Destination }}</td>
+                    <td>{{ train.Available_Seats }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4">No trains found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{{ url_for('trains_page') }}" class="text-link">
+        View all trains →
+    </a>
+</section>
+
+{% endblock %}

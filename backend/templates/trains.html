@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Find Trains | RailEase{% endblock %}
+
+{% block content %}
+
+<section class="page-heading">
+    <p class="eyebrow">QUERY 1</p>
+    <h1>All Trains</h1>
+    <p>View complete train information from the RailwayDB database.</p>
+</section>
+
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Train ID</th>
+                <th>Train Name</th>
+                <th>Source</th>
+                <th>Destination</th>
+                <th>Total Seats</th>
+                <th>Available Seats</th>
+                <th>Price per Seat</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for train in trains %}
+            <tr>
+                <td>{{ train.Train_ID }}</td>
+                <td><strong>{{ train.Train_Name }}</strong></td>
+                <td>{{ train.Source }}</td>
+                <td>{{ train.Destination }}</td>
+                <td>{{ train.Total_Seats }}</td>
+                <td>{{ train.Available_Seats }}</td>
+                <td>₹{{ "%.2f"|format(train.Price_Per_Seat) }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">No trains available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="center-action">
+    <a href="{{ url_for('book_page') }}" class="button">
+        Book a Ticket
+    </a>
+</div>
+
+{% endblock %}

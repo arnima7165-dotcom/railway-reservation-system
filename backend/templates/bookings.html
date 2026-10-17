@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Details | RailEase{% endblock %}
+
+{% block content %}
+
+<section class="page-heading">
+    <p class="eyebrow">YOUR JOURNEY, YOUR RECORDS</p>
+    <h1>Booking Details</h1>
+    <p>
+        View booking information, passenger details, ticket fares
+        and booking status.
+    </p>
+</section>
+
+<section class="dashboard-section">
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Customer Name</th>
+                    <th>Phone</th>
+                    <th>Train Name</th>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Travel Date</th>
+                    <th>Seats Booked</th>
+                    <th>Total Fare</th>
+                    <th>Booking Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>#{{ booking.Booking_ID }}</td>
+                    <td>{{ booking.Customer_Name }}</td>
+                    <td>{{ booking.Phone or '-' }}</td>
+                    <td>{{ booking.Train_Name }}</td>
+                    <td>{{ booking.Source }}</td>
+                    <td>{{ booking.Destination }}</td>
+                    <td>{{ booking.Travel_Date }}</td>
+                    <td>{{ booking.Seats_Booked }}</td>
+
+                    <td>
+                        ₹{{ "%.2f"|format(booking.Total_Fare) }}
+                    </td>
+
+                    <td>
+                        <span class="status-pill
+                            {% if booking.Booking_Status == 'Confirmed' %}
+                                status-confirmed
+                            {% elif booking.Booking_Status == 'Cancelled' %}
+                                status-cancelled
+                            {% else %}
+                                status-other
+                            {% endif %}">
+                            {{ booking.Booking_Status }}
+                        </span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="10" class="empty-message">
+                        No bookings found. Book a ticket to get started.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="center-action">
+        <a href="{{ url_for('book_page') }}" class="button">
+            Book a Ticket
+        </a>
+    </div>
+
+</section>
+
+{% endblock %}

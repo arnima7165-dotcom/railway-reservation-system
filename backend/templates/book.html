@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Book a Ticket | RailEase{% endblock %}
+
+{% block content %}
+
+<section class="page-heading">
+    <p class="eyebrow">YOUR NEXT JOURNEY</p>
+    <h1>Book a Ticket</h1>
+    <p>Enter your details and choose your train.</p>
+</section>
+
+<section class="booking-panel">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('book_page') }}">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="customer_name">Customer Name</label>
+                <input
+                    type="text"
+                    id="customer_name"
+                    name="customer_name"
+                    placeholder="Enter your full name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="Enter your phone number"
+                    maxlength="15"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email (optional)"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="train_id">Select Train</label>
+
+                <select id="train_id" name="train_id" required>
+                    <option value="">Choose a train</option>
+
+                    {% for train in trains %}
+                    <option
+                        value="{{ train.Train_ID }}"
+                        data-price="{{ train.Price_Per_Seat }}"
+                    >
+                        {{ train.Train_Name }}
+                        — {{ train.Source }} to {{ train.Destination }}
+                        (₹{{ "%.2f"|format(train.Price_Per_Seat) }} per seat)
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="travel_date">Travel Date</label>
+                <input
+                    type="date"
+                    id="travel_date"
+                    name="travel_date"
+                    min="{{ today }}"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="seats">Number of Seats</label>
+                <input
+                    type="number"
+                    id="seats"
+                    name="seats"
+                    min="1"
+                    value="1"
+                    required
+                >
+            </div>
+
+        </div>
+
+        <div class="fare-preview">
+            <span>Estimated Total Fare</span>
+            <strong id="estimatedFare">₹0.00</strong>
+            <small>
+                Final fare is calculated and saved when you confirm
+                the booking.
+            </small>
+        </div>
+
+        <button type="submit" class="button booking-submit">
+            Confirm Booking
+        </button>
+
+    </form>
+
+</section>
+
+<script>
+    const trainSelect = document.getElementById("train_id");
+    const seatsInput = document.getElementById("seats");
+    const estimatedFare = document.getElementById("estimatedFare");
+
+    function updateFare() {
+        const selectedOption =
+            trainSelect.options[trainSelect.selectedIndex];
+
+        const price = Number(selectedOption.dataset.price || 0);
+        const seats = Number(seatsInput.value || 0);
+
+        estimatedFare.textContent =
+            "₹" + (price * seats).toFixed(2);
+    }
+
+    trainSelect.addEventListener("change", updateFare);
+    seatsInput.addEventListener("input", updateFare);
+
+    updateFare();
+</script>
+
+{% endblock %}
